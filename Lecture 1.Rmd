@@ -1,0 +1,208 @@
+---
+title: "Managing aspatial data in R"
+author: "Taylor Saunders"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Read in WHO csv data
+
+Use setwd command to set the working directory
+
+```{r}
+setwd("C:/Users/taylo/OneDrive/Desktop/GIS_470/Module_0")
+```
+
+
+```{r}
+my_first_df <- read.csv("WHO.csv", head=TRUE)
+```
+
+## Exploring the dataframe
+
+```{r}
+head(my_first_df)
+```
+```{r}
+str(my_first_df)
+```
+```{r}
+tail(my_first_df)
+```
+String values/vectors: contain words, letters, or any other character type
+Numerical values/vectors: hold different forms of numbers
+
+Creating a string value:
+```{r}
+name_value <- "Taylor"
+```
+
+Creating a numeric value: 
+```{r}
+age_value <- 21
+```
+
+
+```{r}
+print(name_value)
+print(age_value)
+```
+```{r}
+print(age_value - 10)
+print(age_value/2)
+```
+## Vectors
+
+Vector: a column of numeric or string values 
+
+Creating a string vector:
+```{r}
+#think of c as combine
+name_vector <- c("Dylan", "Sarah", "Daniel")
+print(name_vector)
+favorite_food <- c("Pasta", "Cheese", "Pizza")
+```
+Creating a numeric vector:
+```{r}
+age_vector <- c(30, 15, 22)
+print(age_vector)
+```
+## Data Frames
+
+one variable, 3 observation data frame
+```{r}
+df1 <- data.frame(name_vector,age_vector, favorite_food)
+```
+
+
+add a column/variable
+```{r}
+df1$age_15 <- age_vector + 15
+```
+
+```{r}
+head(df1)
+```
+
+
+Exercise: if my age is 21, how old will I be in 2025?
+```{r}
+my_age <- 21
+print(my_age + (2050 - 2024))
+```
+## Replacing DF values
+
+Replace Sarah with Tom
+```{r}
+name_vector[2] <- "Tom"
+print(name_vector)
+```
+
+NEW DF
+```{r}
+name_vector2 <- c("Dylan", "Sarah", "Lisa")
+country_origin <- c("Ireland", "USA", "Mexico")
+df2 <- data.frame(name_vector2, country_origin)
+```
+
+
+## Merging
+
+x is the larger data frame, typically
+y is the attributes we want to add into our primary df (x)
+by = unique characteristic used to join the two DF
+
+```{r}
+#basic merge
+df_merge <- merge(df1, df2, by.x = "name_vector", by.y = "name_vector2")
+```
+
+```{r}
+head(df_merge)
+```
+
+Only Dylan and Sarah are in both vectors used to merge
+
+Solution:
+```{r}
+# all = TRUE
+#keep all observations
+df4 <- merge(df1, df2, by.x = "name_vector", by.y = "name_vector2", all = TRUE)
+```
+
+```{r}
+head(df_merge)
+```
+
+```{r}
+#keep row structure of df1 and only add the columns that match in df2
+df_merge <- merge(df1, df2, by.x = "name_vector", by.y = "name_vector2", all.x = TRUE)
+```
+
+```{r}
+head(df_merge)
+```
+
+```{r}
+df_merge <- merge(df1, df2, by.x = "name_vector", by.y = "name_vector2", all.y = TRUE)
+
+head(df_merge)
+```
+
+## Saving as CSV
+```{r}
+write.csv(df_merge, "C:/Users/taylo/OneDrive/Desktop/GIS_470/Module_0/df_merge.csv")
+```
+
+reading in a csv
+```{r}
+df_merge_read <- read.csv("C:/Users/taylo/OneDrive/Desktop/GIS_470/Module_0/df_merge.csv", head=T)
+```
+
+
+## Descriptive Statistics
+
+```{r}
+head(df4)
+str(df4)
+```
+```{r}
+table(df4$name_vector)
+```
+duplicating the df
+```{r}
+#doubles
+df4_dup <- rbind(df4, df4)
+table(df4_dup$name_vector)
+```
+
+## Basic Statistics
+
+```{r}
+print(df4_dup)
+```
+
+```{r}
+mean(df4_dup$age_vector)
+```
+We have missing values for Lisa
+Solution:
+
+```{r}
+mean(df4_dup$age_vector, na.rm=TRUE)
+```
+
+```{r}
+max(df4_dup$age_vector, na.rm=TRUE)
+min(df4_dup$age_vector, na.rm=TRUE)
+#standard deviation
+sd(df4_dup$age_vector, na.rm=TRUE)
+summary(df4_dup$age_vector)
+#correlation
+cor.test(df4_dup$age_vector, df4_dup$age_15)
+```
+
