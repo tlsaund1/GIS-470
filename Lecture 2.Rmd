@@ -1,0 +1,95 @@
+---
+title: "Lecture 2"
+author: "Taylor Saunders"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Managing Spatial Data
+
+Note: `echo = FALSE` parameter can be added to the code chunk to prevent printing of the R code that generated the result.
+
+Spatial Statistics is designed to explicitly tackle data/problems that are spatial in nature.
+
+Downloading packages
+When working with spatial data and shape files: sf (simple features for R)
+
+```{r, warning = FALSE}
+#install.packages("sf")
+library("sf")
+```
+
+Functionality of sf:
+
+```{r}
+help(package = "sf")
+```
+
+## Reading in a shape file
+
+Reading in the us_states shapefile:
+similar to reading in a csv, just using a different function.
+```{r}
+states <- st_read("C:/Users/taylo/OneDrive/Desktop/GIS_470/Module_1/Mapping_files/Mapping_files/us_states.shp")
+```
+
+```{r}
+#shows contents of states layer
+View(states)
+#contains a geometry field, which differentiates a shapefile from normal csv
+#SPATIAL COMPONENT!
+```
+
+```{r}
+head(states)
+```
+```{r}
+str(states)
+```
+
+## Merging 
+
+Read in States.cvs
+```{r}
+state_info <- read.csv("C:/Users/taylo/OneDrive/Desktop/GIS_470/Module_1/Mapping_files/Mapping_files/States.csv")
+```
+
+```{r}
+head(state_info)
+```
+States.csv does not have a geography column, meaning R is not interpreting it as a shapefile
+
+Merging:
+```{r}
+state_df <- merge(states, state_info, by = "STATE_NAME")
+```
+
+```{r}
+head(state_df)
+```
+"Simple feature collection with 6 features and 12 fields" = interpreted as a SHAPEFILE
+
+## Analysis
+
+```{r}
+#Summary statistics using spatial data frame state_df
+#Question: How many states of each region?
+table(state_df$SUB_REGION)
+```
+```{r}
+mean(state_df$age_mean)
+```
+```{r}
+summary(state_df)
+```
+Mapping Data
+
+```{r}
+plot(state_df)
+```
+
+\
