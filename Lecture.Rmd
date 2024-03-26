@@ -1,5 +1,5 @@
 ---
-title: "Lecture 2"
+title: "Lecture 3"
 author: "Taylor Saunders"
 date: "`r Sys.Date()`"
 output: pdf_document
